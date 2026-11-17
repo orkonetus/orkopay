@@ -1,0 +1,37 @@
+{
+    "editor.formatOnSave": true,
+    "editor.rulers": [100],
+    "editor.tabSize": 4,
+
+    "[solidity]": {
+        "editor.defaultFormatter": "NomicFoundation.hardhat-solidity",
+        "editor.formatOnSave": true
+    },
+
+    "solidity.formatter": "forge",
+    "solidity.compileUsingRemoteVersion": "v0.8.19",
+
+    "files.associations": {
+        "*.sol": "solidity",
+        "*.toml": "toml"
+    },
+
+    "files.exclude": {
+        "out/": true,
+        "cache/": true,
+        "broadcast/": true
+    },
+
+    "search.exclude": {
+        "out/": true,
+        "cache/": true,
+        "lib/": true
+    },
+
+    "terminal.integrated.env.linux": {
+        "FOUNDRY_PROFILE": "default"
+    },
+    "terminal.integrated.env.osx": {
+        "FOUNDRY_PROFILE": "default"
+    }
+}

@@ -1,0 +1,45 @@
+# OrkoPay — AI assistant context
+
+## What this repo is
+
+OrkoPay is OrkoNet's on-chain payment settlement layer. Customers pay checkout
+invoices in ETH or USDC; the contract credits merchants net of the platform fee;
+merchants withdraw to a registered payout address. A TypeScript indexer confirms
+payments against invoices in Postgres.
+
+Read `docs/architecture.md` first for the flow, accounting rules and trust model.
+
+## Layout
+
+- `src/OrkoPay.sol` — settlement (deposit, depositToken, refund, withdraw, collectFees)
+- `src/OrkoPayRegistry.sol` — merchant directory (owner + operator roles)
+- `src/libraries/` — FeeMath (bps math), SafeTransferLib (ETH/ERC-20 transfers)
+- `src/utils/` — Ownable2Step, Pausable, ReentrancyGuard (adapted from OZ v5)
+- `src/periphery/OrkoPayLens.sol` — read-only batch helper
+- `test/` — Foundry tests; shared fixture in `test/utils/BaseTest.sol`
+- `indexer/` — viem + pg service; handlers in `src/handlers.ts`
+
+## Conventions
+
+- `asset == address(0)` means native ETH everywhere.
+- Checks-Effects-Interactions; `nonReentrant` on all value-moving functions.
+- Fees in basis points via `FeeMath` only. `250 bps = 2.5%`.
+- Typed custom errors from `IOrkoPay` / the relevant contract; no require strings in `src/`.
+- Modifier order: `external payable whenNotPaused nonReentrant`.
+- NatSpec `@notice` on every public/external function; `@inheritdoc` for interface impls.
+- Event signature changes must be mirrored in `indexer/src/abi.ts`.
+
+## Commands
+
+```bash
+forge build
+forge test
+forge test --match-test test_<name> -vvv
+forge test --match-path "test/invariant/*"
+forge coverage
+cd indexer && npm test && npm run typecheck
+```
+
+## Solidity version
+
+`0.8.24`, EVM `cancun`. Do not change without updating `foundry.toml` and CI.
